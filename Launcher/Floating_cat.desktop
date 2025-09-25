@@ -1,0 +1,15 @@
+[Desktop Entry]
+Name=Floating_cat
+Comment=A floating cat
+Hidden=false
+NoDisplay=false
+X-Cinnamon-Autostart-enabled=true
+Exec=/home/user/Documents/Repository/Code/floating_cat.py
+Icon=false
+Terminal=false
+Type=Application
+Categories=Utility;
+
+
+
+Name[es_ES]=Floating Cat

@@ -1,0 +1,32 @@
+#!/bin/bash
+set -e
+
+# Actualiza el sistema
+sudo apt update && sudo apt upgrade -y
+
+# Instala dependencias
+sudo apt install -y python3 python3-pip nano
+
+# Instala paquetes de Python
+pip3 install PyQt6 pydub
+
+# Copia archivos principales
+cp -r /usr/share/floating_cat/* ~/floating_cat_app/
+
+# Da permisos de ejecución
+chmod +x ~/floating_cat_app/Code/floating_cat.py
+
+# Configura autostart
+mkdir -p ~/.config/autostart
+cp ~/floating_cat_app/Launcher/Floating_cat.desktop ~/.config/autostart/
+chmod +x ~/.config/autostart/Floating_cat.desktop
+
+# Modifica automáticamente la línea Exec en Floating_cat.desktop
+sed -i "s|^Exec=.*|Exec=python3 ~/floating_cat_app/Code/floating_cat.py|" ~/.config/autostart/Floating_cat.desktop
+
+# Mensaje final
+cat <<EOF
+IMPORTANTE:
+No muevas los archivos después de instalar.
+La línea Exec en ~/.config/autostart/Floating_cat.desktop ya apunta a la ruta absoluta de floating_cat.py en ~/floating_cat_app/Code/.
+EOF

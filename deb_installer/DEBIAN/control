@@ -1,0 +1,8 @@
+Package: floating-cat
+Version: 1.0
+Section: base
+Priority: optional
+Architecture: all
+Depends: python3, python3-pip
+Maintainer: TuNombre <tu@email.com>
+Description: Instala Floating Cat y sus dependencias, configura el autostart y permisos necesarios.
