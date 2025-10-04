@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 from pydub import AudioSegment
 import tempfile
+import threading
 
 # Archivo de rutas
 ROUTES_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "Routes", "rutas.conf"))
@@ -594,14 +595,21 @@ class FloatingImage(QtWidgets.QWidget):
             f.writelines(new_lines)
 
     def play_system_notification(self):
-        # Reproducir sonido de notificación del sistema
-        try:
-            if self.sound_segment_path:
-                subprocess.run(["paplay", self.sound_segment_path], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            else:
-                subprocess.run(["paplay", str(self.sound)], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        except Exception as e:
-            print(f"Error al reproducir el sonido: {e}")
+        # Evitar superposición de sonidos: no reproducir si ya hay uno en curso
+        if getattr(self, '_sound_playing', False):
+            return
+        self._sound_playing = True
+        def play():
+            try:
+                if self.sound_segment_path:
+                    subprocess.run(["paplay", self.sound_segment_path], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                else:
+                    subprocess.run(["paplay", str(self.sound)], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            except Exception as e:
+                print(f"Error al reproducir el sonido: {e}")
+            finally:
+                self._sound_playing = False
+        threading.Thread(target=play, daemon=True).start()
 
 #ejecución de la aplicación
 app = QtWidgets.QApplication(sys.argv)
